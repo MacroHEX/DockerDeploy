@@ -1,0 +1,15 @@
+version: '3.1'
+
+services:
+  postgres:
+    image: postgres
+    container_name: PostgreSQL_Maxi
+    restart: unless-stopped
+    ports:
+      - "${POSTGRESQL_PORT}:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRESQL_DB}
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    container_name: PostgreSQL
+    restart: unless-stopped
+    ports:
+      - "${POSTGRESQL_PORT}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRESQL_DB}
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+    volumes:
+      - ~/apps/postgreskc:/var/lib/postgresql/data
+    networks:
+      - auth-network
+
+  keycloak:
+    image: maxikeycloak
+    container_name: Keycloak_Maxi
+    restart: unless-stopped
+    environment:
+      KC_DB_VENDOR: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRESQL_DB}
+      KC_DB_USERNAME: ${POSTGRESQL_USER}
+      KC_DB_PASSWORD: ${POSTGRESQL_PASSWORD}
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KEYCLOAK_ADMIN: ${KC_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_PASSWORD}
+    ports:
+      - "8484:8080"
+    command:
+      - "start-dev"
+    depends_on:
+      - postgres
+    volumes:
+      - ~/apps/maxi:/opt/keycloak/themes/maxi
+    networks:
+      - auth-network
+
+networks:
+  auth-network:
+    driver: bridge

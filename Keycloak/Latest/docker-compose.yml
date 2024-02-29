@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  keycloak:
+    image: maxikeycloak
+    container_name: Keycloak_Maxi
+    restart: unless-stopped
+    environment:
+      KC_DB_VENDOR: POSTGRES
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+      KC_DB_USERNAME: ${DB_USER}
+      KC_DB_PASSWORD: ${DB_PASSWORD}
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KEYCLOAK_ADMIN: ${KC_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_PASSWORD}
+    ports:
+      - "8082:8080"
+    command:
+      - "start-dev"
+    networks:
+      - auth-network
+
+networks:
+  auth-network:
+    driver: bridge
